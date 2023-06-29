@@ -8,65 +8,67 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.adapter.PropertyFacilitiesAdapter
 import com.example.myapplication.adapter.listener.IItemClickListener
 import com.example.myapplication.databinding.ActivityMainBinding
+import com.example.myapplication.domain.entities.Property
 import com.example.myapplication.model.Facility
-import com.example.myapplication.model.PropertyFilterModel
+import com.example.myapplication.presenter.quotepresenter.QuotePresenter
+import com.example.myapplication.utility.hide
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MainActivity : AppCompatActivity(), MainViewInterface, IItemClickListener<Facility> {
+class MainActivity : AppCompatActivity(), IItemClickListener<Facility> {
 
     private val TAG = "MainActivity"
     private lateinit var binding: ActivityMainBinding
-    private var mainPresenter: MainPresenter? = null
+    val quotePresenter: QuotePresenter by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupMVP()
-        setupViews()
+        setupObserver()
         getMovieList()
     }
 
-    private fun setupMVP() {
-        mainPresenter = MainPresenter(this)
-    }
+    private fun setupObserver() {
+        quotePresenter.getAllQuotes()
+            .observe(this) { propertyFilterResponse ->
+                binding.progressBar.hide()
+                Log.e("exclusion", propertyFilterResponse.exclusions[0][0].optionsId.toString())
+                if (binding.adapterFilter == null) {
+                    binding.adapterFilter = PropertyFacilitiesAdapter(
+                        propertyFilterResponse.facilities, this
+                    )
+                } else {
+                    binding.adapterFilter?.updateItems(propertyFilterResponse.facilities)
+                }
+            }
 
-    private fun setupViews() {
-//        binding.rvPropertyFilter.layoutManager = LinearLayoutManager.
+        quotePresenter.getAllApiQuotes()
+            .observe(this) { propertyFilterResponse ->
+                quotePresenter.insert(propertyFilterResponse)
+                binding.progressBar.hide()
+                if (binding.adapterFilter == null) {
+                    binding.adapterFilter = PropertyFacilitiesAdapter(
+                        propertyFilterResponse.facilities, this
+                    )
+                } else {
+                    binding.adapterFilter?.updateItems(propertyFilterResponse.facilities)
+                }
+            }
+
+        quotePresenter.getAllErrors()
+            .observe(this) { error ->
+                showToast(error)
+            }
     }
 
     private fun getMovieList() {
-        mainPresenter?.getPropertyFilters()
+        quotePresenter.getPropertyFilters()
+        quotePresenter.loadQuotes()
     }
 
-    override fun showToast(message: String) {
+    private fun showToast(message: String) {
         Toast.makeText(this@MainActivity, message, Toast.LENGTH_LONG).show()
-    }
-
-    override fun showProgressBar() {
-        binding.progressBar.visibility = View.VISIBLE;
-    }
-
-    override fun hideProgressBar() {
-        binding.progressBar.visibility = View.GONE;
-    }
-
-    override fun displayPropertyFilters(propertyFilterResponse: PropertyFilterModel?) {
-        if(propertyFilterResponse!=null) {
-            if (binding.adapterFilter == null) {
-                binding.adapterFilter = PropertyFacilitiesAdapter(
-                    propertyFilterResponse.facilities, this
-                )
-            } else {
-                binding.adapterFilter?.updateItems(propertyFilterResponse.facilities)
-            }
-        }else{
-            Log.d(TAG,"Movies response null");
-        }
-    }
-
-    override fun displayError(error: String) {
-        showToast(error)
     }
 
     override fun onItemClick(view: View?, position: Int, actionType: Int?, data: Facility?) {

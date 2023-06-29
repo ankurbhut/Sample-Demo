@@ -1,6 +1,6 @@
 package com.example.myapplication.ui.main
 
-import com.example.myapplication.model.PropertyFilterModel
+import com.example.myapplication.domain.entities.Property
 
 
 /**
@@ -10,6 +10,6 @@ interface MainViewInterface {
     fun showToast(message: String)
     fun showProgressBar()
     fun hideProgressBar()
-    fun displayPropertyFilters(propertyFilterResponse: PropertyFilterModel?)
+    fun displayPropertyFilters(propertyFilterResponse: Property?)
     fun displayError(error: String)
 }

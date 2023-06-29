@@ -12,4 +12,6 @@ data class Option(
     var id: String? = null,
     @SerializedName("name")
     var name: String? = null
-)
+) {
+    var isDisable: Boolean = false
+}

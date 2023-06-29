@@ -57,22 +57,26 @@ internal class FacilitiesOptionAdapter(
             mBinding.data = data
             mBinding.executePendingBindings()
 
+            if (data.isDisable) {
+                mBinding.linearOption.isEnabled = false
+                mBinding.linearOption.setBackgroundResource(R.drawable.btn_option_background_disable)
+            }
+
             if (lastSelectedItem == absoluteAdapterPosition) {
-                mBinding.linearOption.isSelected = true
+                mBinding.linearOption.setBackgroundResource(R.drawable.btn_option_background_selected)
             } else {
-                mBinding.linearOption.isSelected = false
+                mBinding.linearOption.setBackgroundResource(R.drawable.btn_option_background)
             }
 
             mBinding.linearOption.setOnClickListener {
-                if (lastSelectedItem == -1) {
-                    lastSelectedItem = absoluteAdapterPosition
-                    mListener?.onItemClick(
-                        it,
-                        absoluteAdapterPosition,
-                        IItemClickListener.CLICK,
-                        mArrayList[absoluteAdapterPosition]
-                    )
-                }
+                lastSelectedItem = absoluteAdapterPosition
+                mListener?.onItemClick(
+                    it,
+                    absoluteAdapterPosition,
+                    IItemClickListener.CLICK,
+                    mArrayList[absoluteAdapterPosition]
+                )
+                notifyDataSetChanged()
             }
         }
 

@@ -1,17 +1,18 @@
-package com.example.myapplication
+package com.example.myapplication.di
 
 import android.app.Application
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.example.myapplication.network.NetworkClient
-
+import org.koin.android.ext.android.startKoin
 
 class Controller : Application() {
 
     override fun onCreate() {
         super.onCreate()
         instance = this
+        startKoin(this, listOf(appModule))
         NetworkClient.initialize()
         observeApplicationState()
     }

@@ -3,6 +3,8 @@ package com.example.myapplication.model
 
 import com.google.gson.annotations.SerializedName
 import androidx.annotation.Keep
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 @Keep
 data class Facility(
