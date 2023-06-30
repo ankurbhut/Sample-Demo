@@ -7,4 +7,5 @@
     <color name="btn_background_selected">#3e4a6f</color>
     <color name="btn_background_disable">#CC717171</color>
     <color name="btn_background">#1C2235</color>
+    <color name="main_background">#dfdfdf</color>
 </resources>

@@ -12,8 +12,6 @@ import com.example.myapplication.databinding.ItemPropertyFacilitiesBinding
 import com.example.myapplication.model.Facility
 import com.example.myapplication.model.Option
 import com.example.myapplication.utility.hide
-import com.example.myapplication.utility.isGone
-import com.example.myapplication.utility.isVisible
 import com.example.myapplication.utility.show
 
 internal class PropertyFacilitiesAdapter(
@@ -34,7 +32,6 @@ internal class PropertyFacilitiesAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = mArrayList[position]
-        Log.e("Position", position.toString())
         if (position == 0) {
             data.isSelected = true
         }
@@ -49,17 +46,13 @@ internal class PropertyFacilitiesAdapter(
         return mArrayList
     }
 
-    fun getItem(position: Int): Facility {
-        return mArrayList[position]
-    }
-
     fun updateItems(myList: ArrayList<Facility>, position: Int = 0) {
         mArrayList = myList
         if (position == 0) notifyDataSetChanged()
         else notifyItemRangeChanged(position, mArrayList.size)
     }
 
-    inner class ViewHolder(val mBinding: ItemPropertyFacilitiesBinding) :
+    inner class ViewHolder(private val mBinding: ItemPropertyFacilitiesBinding) :
         RecyclerView.ViewHolder(mBinding.root), View.OnClickListener {
 
         fun onBind(data: Facility) {
@@ -77,8 +70,6 @@ internal class PropertyFacilitiesAdapter(
         }
 
         private fun setAdapter(data: Facility, position: Int) {
-//            if (mBinding.adapterOption == null) {
-//                mBinding.adapterOption?.resetLastSelectedPosition()
                 mBinding.adapterOption = FacilitiesOptionAdapter(
                     position,
                     data.options,
@@ -100,9 +91,6 @@ internal class PropertyFacilitiesAdapter(
                             )
                         }
                     })
-//            } else {
-//                mBinding.adapterOption?.updateItems(data.options)
-//            }
         }
 
         override fun onClick(view: View) {

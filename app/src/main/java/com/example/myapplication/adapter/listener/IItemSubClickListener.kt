@@ -8,9 +8,6 @@ interface IItemSubClickListener<T> {
         const val ADD = 2
         const val DELETE = 3
         const val UPDATE = 4
-        const val EMPTY = 5
-        const val LOAD_MORE = 6
-        const val LONG_CLICK = 7
     }
 
     fun onSubItemClick(view: View?, mainPosition: Int, position: Int, actionType: Int?, data: T?) { }

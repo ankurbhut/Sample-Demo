@@ -36,24 +36,7 @@ internal class FacilitiesOptionAdapter(
         return mArrayList.size
     }
 
-    fun resetLastSelectedPosition() {
-        lastSelectedItem = -1
-    }
-
-    fun getItems(): ArrayList<Option> {
-        return mArrayList
-    }
-
-    fun getItem(position: Int): Option {
-        return mArrayList[position]
-    }
-
-    fun updateItems(myList: ArrayList<Option>) {
-        mArrayList = myList
-        notifyDataSetChanged()
-    }
-
-    inner class ViewHolder(val mBinding: ItemOptionBinding) :
+    inner class ViewHolder(private val mBinding: ItemOptionBinding) :
         RecyclerView.ViewHolder(mBinding.root) {
 
         fun onBind(data: Option) {
@@ -82,7 +65,7 @@ internal class FacilitiesOptionAdapter(
                     it,
                     mainPosition,
                     absoluteAdapterPosition,
-                    IItemClickListener.CLICK,
+                    IItemSubClickListener.CLICK,
                     mArrayList[absoluteAdapterPosition]
                 )
                 notifyDataSetChanged()

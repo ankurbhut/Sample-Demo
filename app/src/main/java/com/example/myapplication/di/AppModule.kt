@@ -1,12 +1,12 @@
 package com.example.myapplication.di
 
 import androidx.room.Room
-import com.example.myapplication.intrector.quoteinteractor.IQuoteInteractor
-import com.example.myapplication.intrector.quoteinteractor.QuoteInteractor
-import com.example.myapplication.presenter.quotepresenter.QuotePresenter
+import com.example.myapplication.intrector.propertyinteractor.IPropertyIntractor
+import com.example.myapplication.intrector.propertyinteractor.PropertyIntractor
+import com.example.myapplication.presenter.propertypresenter.PropertyPresenter
 import com.example.myapplication.repositories.databases.AppDatabase
-import com.example.myapplication.repositories.quoterepository.IQuoteRepository
-import com.example.myapplication.repositories.quoterepository.QuoteRepository
+import com.example.myapplication.repositories.propertyrepository.IPropertyRepository
+import com.example.myapplication.repositories.propertyrepository.PropertyRepository
 import org.koin.androidx.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 
@@ -15,19 +15,19 @@ val appModule = module {
 
     single { Room.databaseBuilder(get(), AppDatabase::class.java, "property_filter_database").build() }
 
-    single { get<AppDatabase>().quoteDao() }
+    single { get<AppDatabase>().propertyDao() }
 
-    single<IQuoteRepository> {
-        QuoteRepository(
+    single<IPropertyRepository> {
+        PropertyRepository(
             get()
         )
     }
 
-    single<IQuoteInteractor> {
-        QuoteInteractor(
+    single<IPropertyIntractor> {
+        PropertyIntractor(
             get()
         )
     }
 
-    viewModel { QuotePresenter(get()) }
+    viewModel { PropertyPresenter(get()) }
 }

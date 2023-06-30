@@ -9,11 +9,10 @@ import com.example.myapplication.adapter.PropertyFacilitiesAdapter
 import com.example.myapplication.adapter.listener.IItemClickListener
 import com.example.myapplication.adapter.listener.IItemSubClickListener
 import com.example.myapplication.databinding.ActivityMainBinding
-import com.example.myapplication.databinding.ItemPropertyFacilitiesBinding
 import com.example.myapplication.model.Exclusion
 import com.example.myapplication.model.Facility
 import com.example.myapplication.model.Option
-import com.example.myapplication.presenter.quotepresenter.QuotePresenter
+import com.example.myapplication.presenter.propertypresenter.PropertyPresenter
 import com.example.myapplication.utility.hide
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -21,7 +20,7 @@ class MainActivity : AppCompatActivity(), IItemClickListener<Facility>,
     IItemSubClickListener<Option> {
 
     private lateinit var binding: ActivityMainBinding
-    val quotePresenter: QuotePresenter by viewModel()
+    private val propertyPresenter: PropertyPresenter by viewModel()
     var exclusion: ArrayList<ArrayList<Exclusion>> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,28 +29,13 @@ class MainActivity : AppCompatActivity(), IItemClickListener<Facility>,
         setContentView(binding.root)
 
         setupObserver()
-        getMovieList()
+        getProeprtyList()
     }
 
     private fun setupObserver() {
-        quotePresenter.getAllQuotes()
+        propertyPresenter.getAllProperties()
             .observe(this) { propertyFilterResponse ->
                 exclusion = propertyFilterResponse.exclusions
-                binding.progressBar.hide()
-                Log.e("exclusion", propertyFilterResponse.exclusions[0][0].optionsId.toString())
-                if (binding.adapterFilter == null) {
-                    binding.adapterFilter = PropertyFacilitiesAdapter(
-                        propertyFilterResponse.facilities, this, this
-                    )
-                } else {
-                    binding.adapterFilter?.updateItems(propertyFilterResponse.facilities)
-                }
-            }
-
-        quotePresenter.getAllApiQuotes()
-            .observe(this) { propertyFilterResponse ->
-                exclusion = propertyFilterResponse.exclusions
-                quotePresenter.insert(propertyFilterResponse)
                 binding.progressBar.hide()
                 if (binding.adapterFilter == null) {
                     binding.adapterFilter = PropertyFacilitiesAdapter(
@@ -62,15 +46,28 @@ class MainActivity : AppCompatActivity(), IItemClickListener<Facility>,
                 }
             }
 
-        quotePresenter.getAllErrors()
+        propertyPresenter.getAllApiProperties()
+            .observe(this) { propertyFilterResponse ->
+                exclusion = propertyFilterResponse.exclusions
+                propertyPresenter.insert(propertyFilterResponse)
+                binding.progressBar.hide()
+                if (binding.adapterFilter == null) {
+                    binding.adapterFilter = PropertyFacilitiesAdapter(
+                        propertyFilterResponse.facilities, this, this
+                    )
+                } else {
+                    binding.adapterFilter?.updateItems(propertyFilterResponse.facilities)
+                }
+            }
+
+        propertyPresenter.getAllErrors()
             .observe(this) { error ->
                 showToast(error)
             }
     }
 
-    private fun getMovieList() {
-        quotePresenter.getPropertyFilters()
-        quotePresenter.loadQuotes()
+    private fun getProeprtyList() {
+        propertyPresenter.getPropertyFilters()
     }
 
     private fun showToast(message: String) {
@@ -138,7 +135,7 @@ class MainActivity : AppCompatActivity(), IItemClickListener<Facility>,
 
     }
 
-    fun resetList(mainPosition: Int, facilityId: String, optionId: String) {
+    private fun resetList(mainPosition: Int, facilityId: String, optionId: String) {
         val currentList = binding.adapterFilter?.getItems() ?: return
         for (item in mainPosition+1 until currentList.size) {
             for (option in 0 until currentList[item].options.size) {

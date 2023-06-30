@@ -1,4 +1,4 @@
-package com.example.myapplication.repositories.quoterepository
+package com.example.myapplication.repositories.propertyrepository
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -9,12 +9,12 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class QuoteRepository(private val quoteDao: PropertyFilterModelDao) :
-    IQuoteRepository {
+class PropertyRepository(private val propertyDao: PropertyFilterModelDao) :
+    IPropertyRepository {
 
     @SuppressLint("CheckResult")
-    override fun insert(quote: Property) {
-        quoteDao.insert(quote)
+    override fun insert(property: Property) {
+        propertyDao.insert(property)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -24,8 +24,8 @@ class QuoteRepository(private val quoteDao: PropertyFilterModelDao) :
     }
 
     @SuppressLint("CheckResult")
-    override fun update(quote: Property) {
-        quoteDao.update(quote)
+    override fun update(property: Property) {
+        propertyDao.update(property)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -35,8 +35,8 @@ class QuoteRepository(private val quoteDao: PropertyFilterModelDao) :
     }
 
     @SuppressLint("CheckResult")
-    override fun delete(quote: Property) {
-        quoteDao.delete(quote)
+    override fun delete(property: Property) {
+        propertyDao.delete(property)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -46,8 +46,8 @@ class QuoteRepository(private val quoteDao: PropertyFilterModelDao) :
     }
 
     @SuppressLint("CheckResult")
-    override fun deleteAllQuotes() {
-        Completable.fromAction{ quoteDao.deleteAllNotes() }
+    override fun deleteAllProperties() {
+        Completable.fromAction{ propertyDao.deleteAllProperties() }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -56,5 +56,5 @@ class QuoteRepository(private val quoteDao: PropertyFilterModelDao) :
             )
     }
 
-    override fun getAllQuotes(): Observable<Property> = quoteDao.getAllNotes()
+    override fun getAllProperties(): Observable<Property> = propertyDao.getAllProperty()
 }

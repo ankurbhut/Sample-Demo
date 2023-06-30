@@ -12,5 +12,5 @@ import com.example.myapplication.repositories.daos.PropertyFilterModelDao
 @TypeConverters(ArrayConverters::class, Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun quoteDao() : PropertyFilterModelDao
+    abstract fun propertyDao() : PropertyFilterModelDao
 }

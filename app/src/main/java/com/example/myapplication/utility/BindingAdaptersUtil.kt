@@ -33,7 +33,7 @@ import java.text.DecimalFormat
 import java.util.*
 
 
-object OfferBindingAdaptersUtil {
+object BindingAdaptersUtil {
     @JvmStatic
     @BindingAdapter(value = ["android:isVisible"], requireAll = false)
     fun isVisible(view: View, isVisible: Boolean) {
@@ -269,16 +269,8 @@ object OfferBindingAdaptersUtil {
 
     @JvmStatic
     @BindingAdapter(value = ["android:imageUrl", "android:placeHolder"], requireAll = false)
-    fun setImageUrl(imageView: ImageView, url: Any?, placeHolder: Drawable?) {
-        if (url != null) {
-            if (url is String) {
-                loadMedia(/*BuildConfig.SERVER_URL +*/ url, placeHolder, imageView)
-            } else if (url is File) {
-                loadMedia(url, placeHolder, imageView)
-            }
-        } else {
-            imageView.setImageDrawable(placeHolder)
-        }
+    fun setImageUrl(imageView: ImageView, url: Any?, placeHolder: Int) {
+        imageView.setImageResource(placeHolder)
     }
 
 

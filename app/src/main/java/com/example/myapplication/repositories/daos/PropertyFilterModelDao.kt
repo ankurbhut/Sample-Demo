@@ -13,17 +13,17 @@ import io.reactivex.Observable
 interface PropertyFilterModelDao {
 
     @Insert
-    fun insert(note: Property) : Completable
+    fun insert(property: Property) : Completable
 
     @Update
-    fun update(note: Property) : Completable
+    fun update(property: Property) : Completable
 
     @Delete
-    fun delete(note: Property) : Completable
+    fun delete(property: Property) : Completable
 
     @Query("delete from Property")
-    fun deleteAllNotes()
+    fun deleteAllProperties()
 
     @Query("select * from Property order by id desc")
-    fun getAllNotes(): Observable<Property>
+    fun getAllProperty(): Observable<Property>
 }
