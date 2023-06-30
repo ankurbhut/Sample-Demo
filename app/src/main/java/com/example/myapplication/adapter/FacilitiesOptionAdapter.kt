@@ -1,23 +1,22 @@
 package com.example.myapplication.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.adapter.listener.IItemClickListener
+import com.example.myapplication.adapter.listener.IItemSubClickListener
 import com.example.myapplication.databinding.ItemOptionBinding
-import com.example.myapplication.databinding.ItemPropertyFacilitiesBinding
 import com.example.myapplication.model.Option
-import com.example.myapplication.utility.hide
-import com.example.myapplication.utility.show
 
 internal class FacilitiesOptionAdapter(
+    private var mainPosition: Int,
     private var mArrayList: ArrayList<Option>,
-    private val mListener: IItemClickListener<Option>?
+    private val mListener: IItemSubClickListener<Option>?
 ) : RecyclerView.Adapter<FacilitiesOptionAdapter.ViewHolder>() {
 
     var lastSelectedItem = -1
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             ItemOptionBinding.inflate(
@@ -35,6 +34,10 @@ internal class FacilitiesOptionAdapter(
 
     override fun getItemCount(): Int {
         return mArrayList.size
+    }
+
+    fun resetLastSelectedPosition() {
+        lastSelectedItem = -1
     }
 
     fun getItems(): ArrayList<Option> {
@@ -60,18 +63,24 @@ internal class FacilitiesOptionAdapter(
             if (data.isDisable) {
                 mBinding.linearOption.isEnabled = false
                 mBinding.linearOption.setBackgroundResource(R.drawable.btn_option_background_disable)
+                mBinding.txtOption.setTextColor(itemView.resources.getColor(R.color.btn_background_disable))
+            } else {
+                mBinding.linearOption.isEnabled = true
+                mBinding.linearOption.setBackgroundResource(R.drawable.btn_option_background)
+                mBinding.txtOption.setTextColor(itemView.resources.getColor(R.color.white))
             }
 
             if (lastSelectedItem == absoluteAdapterPosition) {
-                mBinding.linearOption.setBackgroundResource(R.drawable.btn_option_background_selected)
+                if (mBinding.linearOption.isEnabled) mBinding.linearOption.setBackgroundResource(R.drawable.btn_option_background_selected)
             } else {
-                mBinding.linearOption.setBackgroundResource(R.drawable.btn_option_background)
+                if (mBinding.linearOption.isEnabled) mBinding.linearOption.setBackgroundResource(R.drawable.btn_option_background)
             }
 
             mBinding.linearOption.setOnClickListener {
                 lastSelectedItem = absoluteAdapterPosition
-                mListener?.onItemClick(
+                mListener?.onSubItemClick(
                     it,
+                    mainPosition,
                     absoluteAdapterPosition,
                     IItemClickListener.CLICK,
                     mArrayList[absoluteAdapterPosition]

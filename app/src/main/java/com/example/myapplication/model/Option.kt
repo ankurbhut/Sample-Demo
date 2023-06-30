@@ -14,4 +14,5 @@ data class Option(
     var name: String? = null
 ) {
     var isDisable: Boolean = false
+    var isSelected: Boolean = false
 }

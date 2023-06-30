@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.adapter.listener.IItemClickListener
+import com.example.myapplication.adapter.listener.IItemSubClickListener
 import com.example.myapplication.databinding.ItemPropertyFacilitiesBinding
 import com.example.myapplication.model.Facility
 import com.example.myapplication.model.Option
@@ -17,7 +18,8 @@ import com.example.myapplication.utility.show
 
 internal class PropertyFacilitiesAdapter(
     private var mArrayList: ArrayList<Facility>,
-    private val mListener: IItemClickListener<Facility>?
+    private val mListener: IItemClickListener<Facility>?,
+    private val mListenerOption: IItemSubClickListener<Option>?
 ) : RecyclerView.Adapter<PropertyFacilitiesAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -51,9 +53,10 @@ internal class PropertyFacilitiesAdapter(
         return mArrayList[position]
     }
 
-    fun updateItems(myList: ArrayList<Facility>) {
+    fun updateItems(myList: ArrayList<Facility>, position: Int = 0) {
         mArrayList = myList
-        notifyDataSetChanged()
+        if (position == 0) notifyDataSetChanged()
+        else notifyItemRangeChanged(position, mArrayList.size)
     }
 
     inner class ViewHolder(val mBinding: ItemPropertyFacilitiesBinding) :
@@ -62,7 +65,7 @@ internal class PropertyFacilitiesAdapter(
         fun onBind(data: Facility) {
             mBinding.data = data
             mBinding.executePendingBindings()
-            setAdapter(data)
+            setAdapter(data, absoluteAdapterPosition)
 
             if (data.isSelected) {
                 mBinding.rvOption.show()
@@ -73,21 +76,33 @@ internal class PropertyFacilitiesAdapter(
             }
         }
 
-        private fun setAdapter(data: Facility) {
-            if (mBinding.adapterOption == null) {
-                mBinding.adapterOption = FacilitiesOptionAdapter(data.options, object : IItemClickListener<Option> {
-                    override fun onItemClick(
-                        view: View?,
-                        position: Int,
-                        actionType: Int?,
-                        data: Option?
-                    ) {
-
-                    }
-                })
-            } else {
-                mBinding.adapterOption?.updateItems(data.options)
-            }
+        private fun setAdapter(data: Facility, position: Int) {
+//            if (mBinding.adapterOption == null) {
+//                mBinding.adapterOption?.resetLastSelectedPosition()
+                mBinding.adapterOption = FacilitiesOptionAdapter(
+                    position,
+                    data.options,
+                    object : IItemSubClickListener<Option> {
+                        override fun onSubItemClick(
+                            view: View?,
+                            mainPosition: Int,
+                            position: Int,
+                            actionType: Int?,
+                            data: Option?
+                        ) {
+                            super.onSubItemClick(view, mainPosition, position, actionType, data)
+                            mListenerOption?.onSubItemClick(
+                                view,
+                                mainPosition,
+                                position,
+                                actionType,
+                                data
+                            )
+                        }
+                    })
+//            } else {
+//                mBinding.adapterOption?.updateItems(data.options)
+//            }
         }
 
         override fun onClick(view: View) {
